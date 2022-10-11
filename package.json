@@ -1,7 +1,7 @@
 {
-  "name": "express-oauth2",
-  "version": "0.0.1",
-  "description": "A package for oauth2 in express",
+  "name": "@appwise/oauth2-server",
+  "version": "0.0.3",
+  "description": "A package for an oauth2 server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/appwise-labs/express-oauth2.git"
+    "url": "git+https://github.com/appwise-labs/oauth2-server.git"
   },
   "author": "Joren Vandeweyer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/appwise-labs/express-oauth2/issues"
+    "url": "https://github.com/appwise-labs/oauth2-server/issues"
   },
-  "homepage": "https://github.com/appwise-labs/express-oauth2#readme",
+  "homepage": "https://github.com/appwise-labs/oauth2-server#readme",
   "dependencies": {
     "@node-oauth/oauth2-server": "^4.2.0"
   },
