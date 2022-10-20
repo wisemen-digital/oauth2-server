@@ -26,19 +26,19 @@ export interface Token {
 
 
 export interface ClientService {
-  getClient: (clientId: string, secret: string) => Promise<Client>
+  getClient: (clientId: string, secret: string) => Promise<Client|false>
   getUserFromClient: (client: Client) => Promise<User | undefined>
 }
 
 export interface UserService {
-  verify: (email: string, password: string) => Promise<User>
+  verify: (email: string, password: string) => Promise<User|false>
 }
 
 export interface TokenService {
   getAccessTokenLifetime: () => number
   getRefreshTokenLifetime: () => number
   getAccessToken: (accessToken: string) => Promise<Token | false>
-  getRefreshToken: (refreshToken: string) => Promise<RefreshToken | undefined>
+  getRefreshToken: (refreshToken: string) => Promise<RefreshToken | false>
   generateAccessToken: (client: Client, user: User, scope: string | string[]) => Promise<string>
   generateRefreshToken: (client: Client, user: User, scope: string | string []) => Promise<string>
   saveRefreshToken: (refreshToken: string) => Promise<void>
