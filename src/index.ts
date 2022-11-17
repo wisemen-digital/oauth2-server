@@ -6,3 +6,5 @@ export * from './types'
 export { Token, Request, Response } from '@node-oauth/oauth2-server'
 
 export { OAuth2Server }
+
+export { AzureADGrantType } from './grants/AzureADGrantType'

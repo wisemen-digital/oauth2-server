@@ -32,6 +32,7 @@ export interface ClientService {
 
 export interface UserService {
   verify: (email: string, password: string) => Promise<User|false>
+  findADUser?: (id: string) => Promise<User|false>
 }
 
 export interface TokenService {
@@ -45,10 +46,37 @@ export interface TokenService {
   revokeToken: (token: RefreshToken | Token) => Promise<boolean>
 }
 
+export interface PKCEService {
+  find: (state: string) => Promise<PKCEType>
+  create: (pkce: PKCEType) => Promise<PKCEType>
+}
 
 export interface OAuth2ServerOptions {
   scopes: string[]
-  clientService: ClientService
-  userService: UserService
-  tokenService: TokenService
+  services: {
+    clientService: ClientService
+    userService: UserService
+    tokenService: TokenService
+    pkceService?: PKCEService
+  }
+  integrations?: {
+    ad?: AzureADConfig
+  }
+}
+
+export interface PKCEType {
+  uuid: string
+  challengeMethod: string
+  challenge: string
+  verifier: string
+  csrfToken: string | null
+  scopes: string[]
+}
+
+export interface AzureADConfig {
+  clientId: string
+  tenantId: string
+  cloudInstance: string
+  clientSecret: string
+  redirectUri: string
 }

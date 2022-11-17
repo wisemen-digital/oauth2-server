@@ -1,39 +1,40 @@
 import OAuth2Server, { OAuthError, RefreshToken, User } from '@node-oauth/oauth2-server'
+import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
 
-export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
-  const oauth = new OAuth2Server({
+export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
+  const serverOptions: OAuth2Server.ServerOptions = {
     model: {
       getClient: async (clientId: string, secret: string) => {
-        return await options.clientService.getClient(clientId, secret)
+        return await options.services.clientService.getClient(clientId, secret)
       },
       getUserFromClient: async (client: Client) => {
-        return await options.clientService.getUserFromClient(client)
+        return await options.services.clientService.getUserFromClient(client)
       },
       getUser: async (username, password) => {
-        return await options.userService.verify(username, password)
+        return await options.services.userService.verify(username, password)
       },
       generateAccessToken: async (client: Client, user, scope) => {
-        return await options.tokenService.generateAccessToken(client, user, scope)
+        return await options.services.tokenService.generateAccessToken(client, user, scope)
       },
       generateRefreshToken: async (client: Client, user, scope) => {
-        return await options.tokenService.generateRefreshToken(client, user, scope)
+        return await options.services.tokenService.generateRefreshToken(client, user, scope)
       },
       getAccessToken: async (accessToken) => {
-        return await options.tokenService.getAccessToken(accessToken)
+        return await options.services.tokenService.getAccessToken(accessToken)
       },
       getRefreshToken: async (refreshToken) => {
-        return await options.tokenService.getRefreshToken(refreshToken)
+        return await options.services.tokenService.getRefreshToken(refreshToken)
       },
       revokeToken: async (token: RefreshToken | Token) => {
-        return await options.tokenService.revokeToken(token)
+        return await options.services.tokenService.revokeToken(token)
       },
       saveToken: async (token: Token, client: Client, user: User): Promise<Token> => {
         token.client = client
         token.user = user
 
         if (token.refreshToken != null) {
-          await options.tokenService.saveRefreshToken(token.refreshToken)
+          await options.services.tokenService.saveRefreshToken(token.refreshToken)
         }
 
         return token
@@ -73,9 +74,29 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
         return scope
       }
     },
-    accessTokenLifetime: options.tokenService.getAccessTokenLifetime(),
-    refreshTokenLifetime: options.tokenService.getRefreshTokenLifetime()
-  })
+    accessTokenLifetime: options.services.tokenService.getAccessTokenLifetime(),
+    refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
+  }
 
-  return oauth
+  if (options.integrations?.ad) {
+    if (options.services.pkceService == null) {
+      throw new Error('PKCE service is required for Azure AD integration')
+    }
+
+    if (options.services.userService.findADUser == null) {
+      throw new Error('User service must implement findADUser for Azure AD integration')
+    }
+
+    AzureADGrantType.configure(
+      options.integrations.ad,
+      options.services.pkceService,
+      options.services.userService
+    )
+
+    serverOptions.extendedGrantTypes = {
+      ad: AzureADGrantType
+    }
+  }
+
+  return new OAuth2Server(serverOptions)
 }
