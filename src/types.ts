@@ -1,4 +1,10 @@
-import { RefreshToken, User } from '@node-oauth/oauth2-server'
+import OAuth2Server, {
+  AbstractGrantType,
+  AuthorizationCode,
+  AuthorizationCodeModel,
+  RefreshToken,
+  User
+} from '@node-oauth/oauth2-server'
 
 export interface Client {
   id: string
@@ -46,6 +52,12 @@ export interface TokenService {
   revokeToken: (token: RefreshToken | Token) => Promise<boolean>
 }
 
+export interface CodeService {
+  saveAuthorizationCode: (code: AuthorizationCode) =>  Promise<AuthorizationCode | false>
+  getAuthorizationCode: (authorizationCode: string) => Promise<AuthorizationCode | false>
+  revokeAuthorizationCode: (code: AuthorizationCode) => Promise<boolean>
+}
+
 export interface PKCEService {
   find: (state: string) => Promise<PKCEType>
   create: (pkce: PKCEType) => Promise<PKCEType>
@@ -58,10 +70,12 @@ export interface OAuth2ServerOptions {
     userService: UserService
     tokenService: TokenService
     pkceService?: PKCEService
+    codeService?: CodeService
   }
   integrations?: {
     ad?: AzureADConfig
   }
+  extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
 
 export interface PKCEType {
