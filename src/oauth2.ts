@@ -1,8 +1,10 @@
-import OAuth2Server, { OAuthError, RefreshToken, User } from '@node-oauth/oauth2-server'
+import OAuth2Server, {AuthorizationCode, Falsey, OAuthError, RefreshToken, User} from '@node-oauth/oauth2-server'
 import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
+import {generateAuthorizationCodeModel} from "./AuthorizationCodeModel";
 
 export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
+  const codeModel = generateAuthorizationCodeModel(options.services.codeService)
   const serverOptions: OAuth2Server.ServerOptions = {
     model: {
       getClient: async (clientId: string, secret: string) => {
@@ -72,7 +74,8 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
         }
 
         return scope
-      }
+      },
+      ...codeModel
     },
     accessTokenLifetime: options.services.tokenService.getAccessTokenLifetime(),
     refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
@@ -94,8 +97,12 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
     )
 
     serverOptions.extendedGrantTypes = {
-      ad: AzureADGrantType
+      ad: AzureADGrantType,
     }
+  }
+  serverOptions.extendedGrantTypes = {
+    ...options.extendedGrantTypes,
+    ...serverOptions.extendedGrantTypes
   }
 
   return new OAuth2Server(serverOptions)
