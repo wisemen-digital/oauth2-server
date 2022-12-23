@@ -10,6 +10,7 @@ export abstract class AzureADGrantType extends AbstractGrantType {
   private static pkceService: PKCEService
   private static userService: UserService
   private static redirectUri: string
+  private static authority: string
 
   public static configure (
     config: AzureADConfig,
@@ -17,10 +18,12 @@ export abstract class AzureADGrantType extends AbstractGrantType {
     userService: UserService
   ) {
     this.redirectUri = config.redirectUri
+    this.authority = config.cloudInstance + config.tenantId
+
     this.msalInstance = new ConfidentialClientApplication({
       auth: {
         clientId: config.clientId,
-        authority: config.cloudInstance + config.tenantId,
+        authority: this.authority,
         clientSecret: config.clientSecret
       },
       system: {
@@ -66,6 +69,18 @@ export abstract class AzureADGrantType extends AbstractGrantType {
       })),
       scopes: pkce.scopes
     })
+  }
+
+  public static async signoutUrl (redirectUri: string): Promise<string> {
+    if (!this.msalInstance) {
+      throw new Error('AzureADGrantType not configured')
+    }
+
+    const url = new URL(`${this.authority}/oauth2/v2.0/logout`)
+
+    url.searchParams.append('post_logout_redirect_uri', redirectUri)
+
+    return url.toString()
   }
 
   async handle (request: OAuth2Server.Request, client: OAuth2Server.Client): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
