@@ -1,14 +1,33 @@
 import {Client, CodeService} from "./types";
 import OAuth2Server, {AuthorizationCode, AuthorizationCodeModel, Falsey, User} from "@node-oauth/oauth2-server";
 
-export type CodeModel = Pick<AuthorizationCodeModel, 'saveAuthorizationCode' | 'getAuthorizationCode' | 'revokeAuthorizationCode'>
+export type CodeModel = Pick<
+    AuthorizationCodeModel,
+    'saveAuthorizationCode'
+    | 'getAuthorizationCode'
+    | 'revokeAuthorizationCode'
+    | 'generateAuthorizationCode'
+>
 
 
 export function generateAuthorizationCodeModel(service: CodeService | undefined): CodeModel | undefined  {
-    if(service === undefined){
-        return  undefined
+    if(service === undefined) {
+        return undefined
     }
+
     return {
+        generateAuthorizationCode: (service.generateAuthorizationCode)?
+            async (client: Client, user: User, scope: string | string[]): Promise<string> => {
+            if (typeof scope === 'string') {
+                scope = scope.split(' ')
+            }
+
+            if(service.generateAuthorizationCode){
+                return await service.generateAuthorizationCode(client,user,scope)
+            } else {
+                throw new OAuth2Server.OAuthError('generateAuthorizationCode not defined on service')
+            }
+        } : undefined,
         getAuthorizationCode: async (code: string): Promise<AuthorizationCode | Falsey> => {
             return await service.getAuthorizationCode(code)
         },
