@@ -16,17 +16,14 @@ export function generateAuthorizationCodeModel(service: CodeService | undefined)
     }
 
     return {
-        generateAuthorizationCode: (service.generateAuthorizationCode)?
+        generateAuthorizationCode: (service.generateAuthorizationCode !== undefined)?
             async (client: Client, user: User, scope: string | string[]): Promise<string> => {
             if (typeof scope === 'string') {
                 scope = scope.split(' ')
             }
 
-            if(service.generateAuthorizationCode){
+            // @ts-ignore can never be undefined because of check above
                 return await service.generateAuthorizationCode(client,user,scope)
-            } else {
-                throw new OAuth2Server.OAuthError('generateAuthorizationCode not defined on service')
-            }
         } : undefined,
         getAuthorizationCode: async (code: string): Promise<AuthorizationCode | Falsey> => {
             return await service.getAuthorizationCode(code)
