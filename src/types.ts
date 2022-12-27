@@ -53,6 +53,7 @@ export interface TokenService {
 }
 
 export interface CodeService {
+  generateAuthorizationCode?: (client: Client, user: User, scope: string []) => Promise<string>
   saveAuthorizationCode: (code: AuthorizationCode) =>  Promise<AuthorizationCode | false>
   getAuthorizationCode: (authorizationCode: string) => Promise<AuthorizationCode | false>
   revokeAuthorizationCode: (code: AuthorizationCode) => Promise<boolean>
