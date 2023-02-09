@@ -2,6 +2,7 @@ import OAuth2Server, {AuthorizationCode, Falsey, OAuthError, RefreshToken, User}
 import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
 import {generateAuthorizationCodeModel} from "./AuthorizationCodeModel";
+import {AnonymousGrantType} from "./grants/AnonymousGrantType";
 
 export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -96,8 +97,13 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
       options.services.userService
     )
 
+    AnonymousGrantType.configure(
+      options.services.userService
+    )
+
     serverOptions.extendedGrantTypes = {
       ad: AzureADGrantType,
+      anonymous: AnonymousGrantType
     }
   }
   serverOptions.extendedGrantTypes = {

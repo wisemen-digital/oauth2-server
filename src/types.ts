@@ -38,6 +38,7 @@ export interface ClientService {
 
 export interface UserService {
   verify: (email: string, password: string) => Promise<User|false>
+  createAnonymousUser: () => Promise<User>
   findADUser?: (id: string) => Promise<User|false>
 }
 
