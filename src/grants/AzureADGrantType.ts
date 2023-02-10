@@ -1,11 +1,12 @@
 import { ConfidentialClientApplication, CryptoProvider, ResponseMode } from '@azure/msal-node';
-import OAuth2Server, { AbstractGrantType, InvalidArgumentError, InvalidRequestError } from '@node-oauth/oauth2-server';
+import OAuth2Server, { InvalidArgumentError, InvalidRequestError } from '@node-oauth/oauth2-server';
 import { randomUUID } from 'crypto';
 import { AzureADConfig, PKCEService, UserService } from '../types';
+import {DefaultGrantType} from "./DefaultGrantType";
 
 const cryptoProvider = new CryptoProvider()
 
-export abstract class AzureADGrantType extends AbstractGrantType {
+export abstract class AzureADGrantType extends DefaultGrantType {
   private static msalInstance: ConfidentialClientApplication
   private static pkceService: PKCEService
   private static userService: UserService
@@ -132,27 +133,4 @@ export abstract class AzureADGrantType extends AbstractGrantType {
     return await AzureADGrantType.userService.findADUser!(tokenResponse.uniqueId)
   }
 
-  private async saveToken (user: OAuth2Server.User, client: OAuth2Server.Client, scope: string): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
-    const validatedScope = await this.validateScope(user, client, scope)
-
-    if (!validatedScope) {
-      return false
-    }
-
-    const accessToken = await this.generateAccessToken(client, user, validatedScope)
-    const accessTokenExpiresAt = this.getAccessTokenExpiresAt()
-    const refreshToken = await this.generateRefreshToken(client, user, scope)
-    const refreshTokenExpiresAt = this.getRefreshTokenExpiresAt()
-
-    // todo: open issue on @node-oauth/oauth2-server for missing type
-    const that = this as any
-
-    return that.model.saveToken({
-      accessToken,
-      accessTokenExpiresAt,
-      refreshToken,
-      refreshTokenExpiresAt,
-      scope: validatedScope
-    }, client, user)
-  }
 }

@@ -38,6 +38,8 @@ export interface ClientService {
 
 export interface UserService {
   verify: (email: string, password: string) => Promise<User|false>
+  createAnonymousUser?: () => Promise<User>
+  createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   findADUser?: (id: string) => Promise<User|false>
 }
 
@@ -75,6 +77,8 @@ export interface OAuth2ServerOptions {
   }
   integrations?: {
     ad?: AzureADConfig
+    anonymous?: boolean
+    burgerProfiel?: boolean
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
@@ -94,4 +98,21 @@ export interface AzureADConfig {
   cloudInstance: string
   clientSecret: string
   redirectUri: string
+}
+
+export interface IBurgerProfielResponse{
+  at_hash: string;
+  aud: string;
+  azp: string;
+  cot: string;
+  exp: number;
+  family_name: string;
+  given_name: string;
+  iat: number;
+  iss: string;
+  kid: string;
+  sub: string;
+  vo_email?: string;
+  vo_orgcode?: string;
+  vo_orgnaam?: string;
 }

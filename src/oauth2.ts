@@ -2,6 +2,8 @@ import OAuth2Server, {AuthorizationCode, Falsey, OAuthError, RefreshToken, User}
 import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
 import {generateAuthorizationCodeModel} from "./AuthorizationCodeModel";
+import {AnonymousGrantType} from "./grants/AnonymousGrantType";
+import {BurgerProfielGrantType} from "./grants/BurgerProfielGrantType";
 
 export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -81,6 +83,8 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
     refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
   }
 
+  serverOptions.extendedGrantTypes = {
+  }
   if (options.integrations?.ad) {
     if (options.services.pkceService == null) {
       throw new Error('PKCE service is required for Azure AD integration')
@@ -96,9 +100,32 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
       options.services.userService
     )
 
-    serverOptions.extendedGrantTypes = {
-      ad: AzureADGrantType,
+
+    serverOptions.extendedGrantTypes.ad = AzureADGrantType
+  }
+
+  if (options.integrations?.anonymous) {
+    if (options.services.userService.createAnonymousUser == null) {
+      throw new Error('User service must implement createAnonymousUser for Anonymous integration')
     }
+
+    serverOptions.extendedGrantTypes = {
+      anonymous: AnonymousGrantType,
+    }
+
+    serverOptions.extendedGrantTypes.anonymous = AnonymousGrantType
+  }
+
+  if (options.integrations?.burgerProfiel) {
+    if (options.services.userService.createOrGetBurgerProfielUser == null) {
+        throw new Error('User service must implement createOrGetBurgerProfielUser for BurgerProfiel integration')
+    }
+
+    serverOptions.extendedGrantTypes = {
+      burgerProfiel: BurgerProfielGrantType,
+    }
+
+    serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType
   }
   serverOptions.extendedGrantTypes = {
     ...options.extendedGrantTypes,
