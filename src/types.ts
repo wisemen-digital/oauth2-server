@@ -77,6 +77,8 @@ export interface OAuth2ServerOptions {
   }
   integrations?: {
     ad?: AzureADConfig
+    anonymous?: boolean
+    burgerProfiel?: boolean
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }

@@ -3,6 +3,7 @@ import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
 import {generateAuthorizationCodeModel} from "./AuthorizationCodeModel";
 import {AnonymousGrantType} from "./grants/AnonymousGrantType";
+import {BurgerProfielGrantType} from "./grants/BurgerProfielGrantType";
 
 export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -82,6 +83,8 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
     refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
   }
 
+  serverOptions.extendedGrantTypes = {
+  }
   if (options.integrations?.ad) {
     if (options.services.pkceService == null) {
       throw new Error('PKCE service is required for Azure AD integration')
@@ -97,14 +100,24 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
       options.services.userService
     )
 
-    AnonymousGrantType.configure(
-      options.services.userService
-    )
 
+    serverOptions.extendedGrantTypes.ad = AzureADGrantType
+  }
+
+  if (options.integrations?.anonymous) {
     serverOptions.extendedGrantTypes = {
-      ad: AzureADGrantType,
-      anonymous: AnonymousGrantType
+      anonymous: AnonymousGrantType,
     }
+
+    serverOptions.extendedGrantTypes.anonymous = AnonymousGrantType
+  }
+
+  if (options.integrations?.burgerProfiel) {
+    serverOptions.extendedGrantTypes = {
+      burgerProfiel: BurgerProfielGrantType,
+    }
+
+    serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType
   }
   serverOptions.extendedGrantTypes = {
     ...options.extendedGrantTypes,
