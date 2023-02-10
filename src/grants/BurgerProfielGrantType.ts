@@ -27,7 +27,7 @@ export abstract class BurgerProfielGrantType extends DefaultGrantType {
 
     const payload:IBurgerProfielResponse = await this.verifyToken(request.body.id_token)
 
-    const user = await BurgerProfielGrantType.userService.createOrGetBurgerProfielUser(payload)
+    const user = await BurgerProfielGrantType.userService.createOrGetBurgerProfielUser!(payload)
 
     return this.saveToken(user, client, scope)
   }
