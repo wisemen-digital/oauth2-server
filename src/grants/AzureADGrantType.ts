@@ -1,8 +1,8 @@
-import { ConfidentialClientApplication, CryptoProvider, ResponseMode } from '@azure/msal-node';
-import OAuth2Server, { InvalidArgumentError, InvalidRequestError } from '@node-oauth/oauth2-server';
-import { randomUUID } from 'crypto';
-import { AzureADConfig, PKCEService, UserService } from '../types';
-import {DefaultGrantType} from "./DefaultGrantType";
+import { randomUUID } from 'crypto'
+import { ConfidentialClientApplication, CryptoProvider, ResponseMode } from '@azure/msal-node'
+import OAuth2Server, { InvalidArgumentError, InvalidRequestError, User } from '@node-oauth/oauth2-server'
+import { AzureADConfig, PKCEService, UserService } from '../types'
+import { DefaultGrantType } from './DefaultGrantType'
 
 const cryptoProvider = new CryptoProvider()
 
@@ -17,7 +17,7 @@ export abstract class AzureADGrantType extends DefaultGrantType {
     config: AzureADConfig,
     pkceService: PKCEService,
     userService: UserService
-  ) {
+  ): void {
     this.redirectUri = config.redirectUri
     this.authority = config.cloudInstance + config.tenantId
 
@@ -44,7 +44,11 @@ export abstract class AzureADGrantType extends DefaultGrantType {
   }
 
   public static async createUrl (scopes: string[]): Promise<string> {
-    if (!this.msalInstance || !this.pkceService || !this.userService || !this.redirectUri) {
+    if (this.msalInstance == null ||
+        this.pkceService == null ||
+        this.userService == null ||
+        this.redirectUri == null
+    ) {
       throw new Error('AzureADGrantType not configured')
     }
 
@@ -53,10 +57,10 @@ export abstract class AzureADGrantType extends DefaultGrantType {
     const pkce = await this.pkceService.create({
       uuid: randomUUID(),
       challengeMethod: 'S256',
-      challenge: challenge,
-      verifier: verifier,
+      challenge,
+      verifier,
       csrfToken: cryptoProvider.createNewGuid(),
-      scopes: scopes
+      scopes
     })
 
     return await this.msalInstance.getAuthCodeUrl({
@@ -73,7 +77,7 @@ export abstract class AzureADGrantType extends DefaultGrantType {
   }
 
   public static async signoutUrl (redirectUri: string): Promise<string> {
-    if (!this.msalInstance) {
+    if (this.msalInstance == null) {
       throw new Error('AzureADGrantType not configured')
     }
 
@@ -85,15 +89,15 @@ export abstract class AzureADGrantType extends DefaultGrantType {
   }
 
   async handle (request: OAuth2Server.Request, client: OAuth2Server.Client): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
-    if (!request) {
+    if (request == null) {
       throw new InvalidArgumentError('Missing parameter: `request`')
     }
 
-    if (!client) {
+    if (client == null) {
       throw new InvalidArgumentError('Missing parameter: `client`')
     }
 
-    if (!request.body?.code) {
+    if (request.body?.code == null) {
       throw new InvalidRequestError('Missing parameter: `code`')
     }
 
@@ -101,14 +105,14 @@ export abstract class AzureADGrantType extends DefaultGrantType {
 
     const user = await this.verifyCode(request.body.code, request.body.state)
 
-    if (!user) {
+    if (user == null || user === false) {
       throw new InvalidRequestError('User not found')
     }
 
-    return this.saveToken(user, client, scope)
+    return await this.saveToken(user, client, scope)
   }
 
-  async verifyCode (code: string, state: string) {
+  async verifyCode (code: string, state: string): Promise<false | User> {
     if (state == null) {
       throw new Error('state is null')
     }
@@ -122,7 +126,7 @@ export abstract class AzureADGrantType extends DefaultGrantType {
     }
 
     const authCodeRequest = {
-      code: code,
+      code,
       codeVerifier: pkce.verifier,
       redirectUri: AzureADGrantType.redirectUri,
       scopes: pkce.scopes
@@ -132,5 +136,4 @@ export abstract class AzureADGrantType extends DefaultGrantType {
 
     return await AzureADGrantType.userService.findADUser!(tokenResponse.uniqueId)
   }
-
 }

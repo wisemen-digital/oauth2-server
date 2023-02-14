@@ -1,7 +1,6 @@
-import OAuth2Server, {
+import {
   AbstractGrantType,
   AuthorizationCode,
-  AuthorizationCodeModel,
   RefreshToken,
   User
 } from '@node-oauth/oauth2-server'
@@ -17,7 +16,6 @@ export interface Client {
   [key: string]: any
 }
 
-
 export interface Token {
   accessToken: string
   accessTokenExpiresAt: Date
@@ -30,17 +28,16 @@ export interface Token {
   [key: string]: any
 }
 
-
 export interface ClientService {
-  getClient: (clientId: string, secret: string) => Promise<Client|false>
+  getClient: (clientId: string, secret: string) => Promise<Client | false>
   getUserFromClient: (client: Client) => Promise<User | undefined>
 }
 
 export interface UserService {
-  verify: (email: string, password: string) => Promise<User|false>
+  verify: (email: string, password: string) => Promise<User | false>
   createAnonymousUser?: () => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
-  findADUser?: (id: string) => Promise<User|false>
+  findADUser?: (id: string) => Promise<User | false>
 }
 
 export interface TokenService {
@@ -56,7 +53,7 @@ export interface TokenService {
 
 export interface CodeService {
   generateAuthorizationCode?: (client: Client, user: User, scope: string []) => Promise<string>
-  saveAuthorizationCode: (code: AuthorizationCode) =>  Promise<AuthorizationCode | false>
+  saveAuthorizationCode: (code: AuthorizationCode) => Promise<AuthorizationCode | false>
   getAuthorizationCode: (authorizationCode: string) => Promise<AuthorizationCode | false>
   revokeAuthorizationCode: (code: AuthorizationCode) => Promise<boolean>
 }
@@ -104,19 +101,19 @@ export interface IBurgerProfielConfig {
   issuers: string[]
 }
 
-export interface IBurgerProfielResponse{
-  at_hash: string;
-  aud: string;
-  azp: string;
-  cot: string;
-  exp: number;
-  family_name: string;
-  given_name: string;
-  iat: number;
-  iss: string;
-  kid: string;
-  sub: string;
-  vo_email?: string;
-  vo_orgcode?: string;
-  vo_orgnaam?: string;
+export interface IBurgerProfielResponse {
+  at_hash: string
+  aud: string
+  azp: string
+  cot: string
+  exp: number
+  family_name: string
+  given_name: string
+  iat: number
+  iss: string
+  kid: string
+  sub: string
+  vo_email?: string
+  vo_orgcode?: string
+  vo_orgnaam?: string
 }
