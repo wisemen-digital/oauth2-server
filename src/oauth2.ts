@@ -1,11 +1,11 @@
-import OAuth2Server, {AuthorizationCode, Falsey, OAuthError, RefreshToken, User} from '@node-oauth/oauth2-server'
+import OAuth2Server, { OAuthError, RefreshToken, User } from '@node-oauth/oauth2-server'
 import { AzureADGrantType } from './grants/AzureADGrantType'
 import { Client, OAuth2ServerOptions, Token } from './types'
-import {generateAuthorizationCodeModel} from "./AuthorizationCodeModel";
-import {AnonymousGrantType} from "./grants/AnonymousGrantType";
-import {BurgerProfielGrantType} from "./grants/BurgerProfielGrantType";
+import { generateAuthorizationCodeModel } from './AuthorizationCodeModel'
+import { AnonymousGrantType } from './grants/AnonymousGrantType'
+import { BurgerProfielGrantType } from './grants/BurgerProfielGrantType'
 
-export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
+export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
   const serverOptions: OAuth2Server.ServerOptions = {
     model: {
@@ -83,9 +83,8 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
     refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
   }
 
-  serverOptions.extendedGrantTypes = {
-  }
-  if (options.integrations?.ad) {
+  serverOptions.extendedGrantTypes = {}
+  if (options?.integrations?.ad != null) {
     if (options.services.pkceService == null) {
       throw new Error('PKCE service is required for Azure AD integration')
     }
@@ -100,38 +99,37 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
       options.services.userService
     )
 
-
     serverOptions.extendedGrantTypes.ad = AzureADGrantType
   }
 
-  if (options.integrations?.anonymous) {
+  if (options.integrations?.anonymous != null) {
     if (options.services.userService.createAnonymousUser == null) {
       throw new Error('User service must implement createAnonymousUser for Anonymous integration')
     }
 
     AnonymousGrantType.configure(
-        options.services.userService
+      options.services.userService
     )
 
     serverOptions.extendedGrantTypes = {
-      anonymous: AnonymousGrantType,
+      anonymous: AnonymousGrantType
     }
 
     serverOptions.extendedGrantTypes.anonymous = AnonymousGrantType
   }
 
-  if (options.integrations?.burgerProfiel) {
+  if ((options.integrations?.burgerProfiel) != null) {
     if (options.services.userService.createOrGetBurgerProfielUser == null) {
-        throw new Error('User service must implement createOrGetBurgerProfielUser for BurgerProfiel integration')
+      throw new Error('User service must implement createOrGetBurgerProfielUser for BurgerProfiel integration')
     }
 
     BurgerProfielGrantType.configure(
-        options.integrations.burgerProfiel,
-        options.services.userService
+      options.integrations.burgerProfiel,
+      options.services.userService
     )
 
     serverOptions.extendedGrantTypes = {
-      burgerProfiel: BurgerProfielGrantType,
+      burgerProfiel: BurgerProfielGrantType
     }
 
     serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType

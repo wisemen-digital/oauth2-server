@@ -1,38 +1,38 @@
-import OAuth2Server, {InvalidArgumentError} from "@node-oauth/oauth2-server";
-import {IBurgerProfielConfig, IBurgerProfielResponse, UserService} from "../types";
-import {DefaultGrantType} from "./DefaultGrantType";
+import OAuth2Server, { InvalidArgumentError } from '@node-oauth/oauth2-server'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import axios from "axios";
-import {importJWK, jwtVerify} from "jose";
+import axios from 'axios'
+import { importJWK, jwtVerify } from 'jose'
+import { IBurgerProfielConfig, IBurgerProfielResponse, UserService } from '../types'
+import { DefaultGrantType } from './DefaultGrantType'
 
 export abstract class BurgerProfielGrantType extends DefaultGrantType {
   private static userService: UserService
   private static issuers: string[]
 
   public static configure (
-      config: IBurgerProfielConfig,
-      userService: UserService
-  ) {
-      this.userService = userService
-      this.issuers = config.issuers
+    config: IBurgerProfielConfig,
+    userService: UserService
+  ): void {
+    this.userService = userService
+    this.issuers = config.issuers
   }
 
   async handle (request: OAuth2Server.Request, client: OAuth2Server.Client): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
-    if (!request) {
+    if (request == null) {
       throw new InvalidArgumentError('Missing parameter: `request`')
     }
 
-    if (!client) {
+    if (client == null) {
       throw new InvalidArgumentError('Missing parameter: `client`')
     }
 
     const scope = this.getScope(request)
 
-    const payload:IBurgerProfielResponse = await this.verifyToken(request.body.id_token)
+    const payload: IBurgerProfielResponse = await this.verifyToken(request.body.id_token)
 
     const user = await BurgerProfielGrantType.userService.createOrGetBurgerProfielUser!(payload)
 
-    return this.saveToken(user, client, scope)
+    return await this.saveToken(user, client, scope)
   }
 
   async verifyToken (token: string) {
@@ -42,7 +42,7 @@ export abstract class BurgerProfielGrantType extends DefaultGrantType {
       throw new InvalidArgumentError('Invalid issuer')
     }
 
-    const configurationUrl = payload.iss + '/.well-known/openid-configuration'
+    const configurationUrl = payload.iss as string + '/.well-known/openid-configuration'
     const configuration = await axios.get(configurationUrl).then(res => res.data)
 
     const keys = await axios.get(configuration.jwks_uri).then(res => res.data?.keys)

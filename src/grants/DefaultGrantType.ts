@@ -1,10 +1,10 @@
-import OAuth2Server, {AbstractGrantType} from "@node-oauth/oauth2-server";
+import OAuth2Server, { AbstractGrantType } from '@node-oauth/oauth2-server'
 
-export abstract class DefaultGrantType extends AbstractGrantType{
+export abstract class DefaultGrantType extends AbstractGrantType {
   protected async saveToken (user: OAuth2Server.User, client: OAuth2Server.Client, scope: string): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
     const validatedScope = await this.validateScope(user, client, scope)
 
-    if (!validatedScope) {
+    if (validatedScope == null) {
       return false
     }
 

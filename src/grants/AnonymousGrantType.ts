@@ -1,20 +1,20 @@
-import OAuth2Server, {InvalidArgumentError} from "@node-oauth/oauth2-server";
-import {UserService} from "../types";
-import {DefaultGrantType} from "./DefaultGrantType";
+import OAuth2Server, { InvalidArgumentError } from '@node-oauth/oauth2-server'
+import { UserService } from '../types'
+import { DefaultGrantType } from './DefaultGrantType'
 
 export abstract class AnonymousGrantType extends DefaultGrantType {
   private static userService: UserService
 
-  public static configure (userService: UserService) {
-      this.userService = userService
+  public static configure (userService: UserService): void {
+    this.userService = userService
   }
 
   async handle (request: OAuth2Server.Request, client: OAuth2Server.Client): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
-    if (!request) {
+    if (request == null) {
       throw new InvalidArgumentError('Missing parameter: `request`')
     }
 
-    if (!client) {
+    if (client == null) {
       throw new InvalidArgumentError('Missing parameter: `client`')
     }
 
@@ -22,6 +22,6 @@ export abstract class AnonymousGrantType extends DefaultGrantType {
 
     const user = await AnonymousGrantType.userService.createAnonymousUser!()
 
-    return this.saveToken(user, client, scope)
+    return await this.saveToken(user, client, scope)
   }
 }
