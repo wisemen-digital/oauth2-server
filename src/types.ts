@@ -78,7 +78,7 @@ export interface OAuth2ServerOptions {
   integrations?: {
     ad?: AzureADConfig
     anonymous?: boolean
-    burgerProfiel?: boolean
+    burgerProfiel?: IBurgerProfielConfig
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
@@ -98,6 +98,10 @@ export interface AzureADConfig {
   cloudInstance: string
   clientSecret: string
   redirectUri: string
+}
+
+export interface IBurgerProfielConfig {
+  issuers: string[]
 }
 
 export interface IBurgerProfielResponse{

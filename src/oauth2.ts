@@ -109,6 +109,10 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
       throw new Error('User service must implement createAnonymousUser for Anonymous integration')
     }
 
+    AnonymousGrantType.configure(
+        options.services.userService
+    )
+
     serverOptions.extendedGrantTypes = {
       anonymous: AnonymousGrantType,
     }
@@ -120,6 +124,11 @@ export function createOAuth2 (options: OAuth2ServerOptions, ): OAuth2Server {
     if (options.services.userService.createOrGetBurgerProfielUser == null) {
         throw new Error('User service must implement createOrGetBurgerProfielUser for BurgerProfiel integration')
     }
+
+    BurgerProfielGrantType.configure(
+        options.integrations.burgerProfiel,
+        options.services.userService
+    )
 
     serverOptions.extendedGrantTypes = {
       burgerProfiel: BurgerProfielGrantType,
