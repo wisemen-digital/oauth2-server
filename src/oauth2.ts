@@ -84,6 +84,7 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   }
 
   serverOptions.extendedGrantTypes = {}
+
   if (options?.integrations?.ad != null) {
     if (options.services.pkceService == null) {
       throw new Error('PKCE service is required for Azure AD integration')
@@ -111,10 +112,6 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
       options.services.userService
     )
 
-    serverOptions.extendedGrantTypes = {
-      anonymous: AnonymousGrantType
-    }
-
     serverOptions.extendedGrantTypes.anonymous = AnonymousGrantType
   }
 
@@ -128,12 +125,9 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
       options.services.userService
     )
 
-    serverOptions.extendedGrantTypes = {
-      burgerProfiel: BurgerProfielGrantType
-    }
-
     serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType
   }
+
   serverOptions.extendedGrantTypes = {
     ...options.extendedGrantTypes,
     ...serverOptions.extendedGrantTypes

@@ -28,14 +28,15 @@ export abstract class BurgerProfielGrantType extends DefaultGrantType {
 
     const scope = this.getScope(request)
 
-    const payload: IBurgerProfielResponse = await this.verifyToken(request.body.id_token)
+    const payload = await this.verifyToken(request.body.id_token)
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = await BurgerProfielGrantType.userService.createOrGetBurgerProfielUser!(payload)
 
     return await this.saveToken(user, client, scope)
   }
 
-  async verifyToken (token: string) {
+  async verifyToken (token: string): Promise<IBurgerProfielResponse> {
     const { payload, header } = jwt.decode(token, { complete: true }) as JwtPayload
 
     if (!BurgerProfielGrantType.issuers.includes(payload.iss)) {

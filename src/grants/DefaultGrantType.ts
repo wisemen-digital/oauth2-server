@@ -14,6 +14,7 @@ export abstract class DefaultGrantType extends AbstractGrantType {
     const refreshTokenExpiresAt = this.getRefreshTokenExpiresAt()
 
     // todo: open issue on @node-oauth/oauth2-server for missing type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const that = this as any
 
     return that.model.saveToken({

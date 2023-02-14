@@ -20,6 +20,7 @@ export abstract class AnonymousGrantType extends DefaultGrantType {
 
     const scope = this.getScope(request)
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = await AnonymousGrantType.userService.createAnonymousUser!()
 
     return await this.saveToken(user, client, scope)
