@@ -38,6 +38,7 @@ export interface UserService {
   createAnonymousUser?: () => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   findADUser?: (id: string) => Promise<User | false>
+  findGoogleUser?: (id: string) => Promise<User | false>
 }
 
 export interface TokenService {
@@ -95,6 +96,21 @@ export interface AzureADConfig {
   cloudInstance: string
   clientSecret: string
   redirectUri: string
+}
+export interface GoogleConfig {
+  clientId: string
+  clientSecret: string
+  cloudApiKey: string
+  cloudInstance: string
+  redirectUri: string
+}
+
+export interface GoogleGenerateAuthURLOptions {
+  scopes: string[]
+  accessType: 'offline' | 'online'
+  hd?: string
+  loginHint?: string
+  prompt?: 'consent' | 'select_account' | 'none'
 }
 
 export interface IBurgerProfielConfig {
