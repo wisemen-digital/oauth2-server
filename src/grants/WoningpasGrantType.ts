@@ -21,7 +21,7 @@ export abstract class WoningpasGrantType extends DefaultGrantType {
     const scope = this.getScope(request)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = await WoningpasGrantType.userService.createWoningpasUser!()
+    const user = await WoningpasGrantType.userService.createWoningpasUser!(client.id)
 
     return await this.saveToken(user, client, scope)
   }
