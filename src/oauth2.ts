@@ -4,6 +4,7 @@ import { Client, OAuth2ServerOptions, Token } from './types'
 import { generateAuthorizationCodeModel } from './AuthorizationCodeModel'
 import { AnonymousGrantType } from './grants/AnonymousGrantType'
 import { BurgerProfielGrantType } from './grants/BurgerProfielGrantType'
+import { WoningpasGrantType } from './grants/WoningpasGrantType'
 
 export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -113,6 +114,18 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     )
 
     serverOptions.extendedGrantTypes.anonymous = AnonymousGrantType
+  }
+
+  if (options.integrations?.woningpas != null) {
+    if (options.services.userService.createWoningpasUser == null) {
+      throw new Error('User service must implement createWoningpasUser for Woningpas integration')
+    }
+
+    WoningpasGrantType.configure(
+      options.services.userService
+    )
+
+    serverOptions.extendedGrantTypes.woningpas = WoningpasGrantType
   }
 
   if ((options.integrations?.burgerProfiel) != null) {
