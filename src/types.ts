@@ -36,6 +36,7 @@ export interface ClientService {
 export interface UserService {
   verify: (email: string, password: string) => Promise<User | false>
   createAnonymousUser?: () => Promise<User>
+  createWoningpasUser?: (clientUuid: string) => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   findADUser?: (id: string) => Promise<User | false>
 }
@@ -75,6 +76,7 @@ export interface OAuth2ServerOptions {
   integrations?: {
     ad?: AzureADConfig
     anonymous?: boolean
+    woningpas?: boolean
     burgerProfiel?: IBurgerProfielConfig
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>

@@ -26,6 +26,10 @@ export abstract class BurgerProfielGrantType extends DefaultGrantType {
       throw new InvalidArgumentError('Missing parameter: `client`')
     }
 
+    if (request.body.id_token == null) {
+      throw new InvalidArgumentError('Missing parameter: `id_token`')
+    }
+
     const scope = this.getScope(request)
 
     const payload = await this.verifyToken(request.body.id_token)
