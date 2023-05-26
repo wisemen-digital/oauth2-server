@@ -18,7 +18,7 @@ export interface Client {
 
 export interface Token {
   accessToken: string
-  accessTokenExpiresAt: Date
+  accessTokenExpiresAt?: Date
   refreshToken?: string
   refreshTokenExpiresAt?: Date
   scope: string[]
