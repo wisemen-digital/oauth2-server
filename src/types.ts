@@ -38,6 +38,7 @@ export interface UserService {
   createAnonymousUser?: () => Promise<User>
   createWoningpasUser?: (clientUuid: string) => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
+  createOrGetGoogleUser?: (payload: IGoogleResponse) => Promise<User>
   findADUser?: (id: string) => Promise<User | false>
 }
 
@@ -78,6 +79,7 @@ export interface OAuth2ServerOptions {
     anonymous?: boolean
     woningpas?: boolean
     burgerProfiel?: IBurgerProfielConfig
+    google?: boolean
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
@@ -118,4 +120,21 @@ export interface IBurgerProfielResponse {
   vo_email?: string
   vo_orgcode?: string
   vo_orgnaam?: string
+}
+
+export interface IGoogleResponse {
+  iss: string
+  azp: string
+  aud: string
+  sub: string
+  hd: string
+  email: string
+  email_verified: boolean
+  name: string
+  picture: string
+  given_name: string
+  family_name: string
+  locale: string
+  iat: number
+  exp: number
 }

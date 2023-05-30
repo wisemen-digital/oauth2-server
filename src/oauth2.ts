@@ -5,6 +5,7 @@ import { generateAuthorizationCodeModel } from './AuthorizationCodeModel'
 import { AnonymousGrantType } from './grants/AnonymousGrantType'
 import { BurgerProfielGrantType } from './grants/BurgerProfielGrantType'
 import { WoningpasGrantType } from './grants/WoningpasGrantType'
+import { GoogleGrantType } from './grants/GoogleGrantType'
 
 export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -139,6 +140,18 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     )
 
     serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType
+  }
+
+  if (options.integrations?.google === true) {
+    if (options.services.userService.createOrGetGoogleUser == null) {
+      throw new Error('User service must implement createOrGetGoogleUser for Google integration')
+    }
+
+    GoogleGrantType.configure(
+      options.services.userService
+    )
+
+    serverOptions.extendedGrantTypes.google = GoogleGrantType
   }
 
   serverOptions.extendedGrantTypes = {
