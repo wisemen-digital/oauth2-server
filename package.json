@@ -1,6 +1,6 @@
 {
   "name": "@appwise/oauth2-server",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A package for an oauth2 server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,8 @@
     "@node-oauth/oauth2-server": "^4.3.0",
     "axios": "^1.3.2",
     "jose": "^4.11.4",
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "jwk-to-pem": "^2.0.5"
   },
   "devDependencies": {
     "@types/node": "^18.11.17",

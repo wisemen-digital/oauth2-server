@@ -3,10 +3,10 @@ import axios from 'axios'
 import { base64url } from 'jose'
 import jwt from 'jsonwebtoken'
 import jwkToPem from 'jwk-to-pem'
-import { IGoogleResponse, UserService } from '../types'
+import { IAppleResponse, UserService } from '../types'
 import { DefaultGrantType } from './DefaultGrantType'
 
-export abstract class GoogleGrantType extends DefaultGrantType {
+export abstract class AppleGrantType extends DefaultGrantType {
   private static userService: UserService
 
   public static configure (userService: UserService): void {
@@ -27,23 +27,21 @@ export abstract class GoogleGrantType extends DefaultGrantType {
     const response = await this.verifyToken(request.body.token)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = await GoogleGrantType.userService.createOrGetGoogleUser!(response)
+    const user = await AppleGrantType.userService.createOrGetAppleUser!(response)
 
     return await this.saveToken(user, client, scope)
   }
 
-  async verifyToken (token: string): Promise<IGoogleResponse> {
-    const { data } = await axios.get('https://www.googleapis.com/oauth2/v3/certs')
+  async verifyToken (token: string): Promise<IAppleResponse> {
+    const { data } = await axios.get('https://appleid.apple.com/auth/keys')
     const { keys } = data
 
     const headerBase64Url = token.split('.')[0]
-    const header = JSON.parse(base64url.decode(headerBase64Url) as unknown as string)
+    const header = JSON.parse(Buffer.from(headerBase64Url, 'base64').toString('utf8'))
 
     const matchingKey = keys.find((key) => key.kid === header.kid)
 
-    if (matchingKey == null) {
-      throw new Error('No matching kid found')
-    }
+    if (matchingKey == null) throw new Error('No matching kid found.')
 
     const pem = jwkToPem(matchingKey)
 
