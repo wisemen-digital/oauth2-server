@@ -39,6 +39,7 @@ export interface UserService {
   createWoningpasUser?: (clientUuid: string) => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   createOrGetGoogleUser?: (payload: IGoogleResponse) => Promise<User>
+  createOrGetAppleUser?: (payload: IAppleResponse) => Promise<User>
   findADUser?: (id: string) => Promise<User | false>
 }
 
@@ -80,6 +81,7 @@ export interface OAuth2ServerOptions {
     woningpas?: boolean
     burgerProfiel?: IBurgerProfielConfig
     google?: boolean
+    apple?: boolean
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
@@ -128,7 +130,7 @@ export interface IGoogleResponse {
   aud: string
   sub: string
   hd: string
-  email: string
+  email?: string
   email_verified: boolean
   name: string
   picture: string
@@ -137,4 +139,18 @@ export interface IGoogleResponse {
   locale: string
   iat: number
   exp: number
+}
+
+export interface IAppleResponse {
+  iss: string
+  aud: string
+  exp: number
+  iat: number
+  sub: string
+  c_hash: string
+  email?: string
+  email_verified: string
+  is_private_email: string
+  auth_time: number
+  nonce_supported: boolean
 }

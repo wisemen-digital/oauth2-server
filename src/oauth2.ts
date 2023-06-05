@@ -6,6 +6,7 @@ import { AnonymousGrantType } from './grants/AnonymousGrantType'
 import { BurgerProfielGrantType } from './grants/BurgerProfielGrantType'
 import { WoningpasGrantType } from './grants/WoningpasGrantType'
 import { GoogleGrantType } from './grants/GoogleGrantType'
+import { AppleGrantType } from './grants/AppleGrantType'
 
 export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -142,7 +143,7 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     serverOptions.extendedGrantTypes.burgerProfiel = BurgerProfielGrantType
   }
 
-  if (options.integrations?.google === true) {
+  if (options.integrations?.google != null) {
     if (options.services.userService.createOrGetGoogleUser == null) {
       throw new Error('User service must implement createOrGetGoogleUser for Google integration')
     }
@@ -157,6 +158,18 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   serverOptions.extendedGrantTypes = {
     ...options.extendedGrantTypes,
     ...serverOptions.extendedGrantTypes
+  }
+
+  if (options.integrations?.apple != null) {
+    if (options.services.userService.createOrGetAppleUser == null) {
+      throw new Error('User service must implement createOrGetAppleUser for Apple integration')
+    }
+
+    AppleGrantType.configure(
+      options.services.userService
+    )
+
+    serverOptions.extendedGrantTypes.apple = AppleGrantType
   }
 
   return new OAuth2Server(serverOptions)
