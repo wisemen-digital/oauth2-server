@@ -130,7 +130,7 @@ export interface IGoogleResponse {
   aud: string
   sub: string
   hd: string
-  email: string
+  email?: string
   email_verified: boolean
   name: string
   picture: string
@@ -148,7 +148,7 @@ export interface IAppleResponse {
   iat: number
   sub: string
   c_hash: string
-  email: string
+  email?: string
   email_verified: string
   is_private_email: string
   auth_time: number
