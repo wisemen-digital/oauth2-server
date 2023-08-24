@@ -1,3 +1,4 @@
+import { AuthenticationResult } from '@azure/msal-node'
 import {
   AbstractGrantType,
   AuthorizationCode,
@@ -40,7 +41,7 @@ export interface UserService {
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   createOrGetGoogleUser?: (payload: IGoogleResponse) => Promise<User>
   createOrGetAppleUser?: (payload: IAppleResponse) => Promise<User>
-  findADUser?: (id: string) => Promise<User | false>
+  findADUser?: (payload: AuthenticationResult) => Promise<User | false>
 }
 
 export interface TokenService {
