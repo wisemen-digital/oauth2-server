@@ -135,6 +135,6 @@ export abstract class AzureADGrantType extends DefaultGrantType {
     const tokenResponse = await AzureADGrantType.msalInstance.acquireTokenByCode(authCodeRequest)
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return await AzureADGrantType.userService.findADUser!(tokenResponse.uniqueId)
+    return await AzureADGrantType.userService.findADUser!(tokenResponse)
   }
 }
