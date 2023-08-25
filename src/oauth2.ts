@@ -69,6 +69,9 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
         }
 
         const valid = scope.every(s => {
+          if (client.scopes == null) {
+            return false
+          }
           return client.scopes.includes(s) && options.scopes.includes(s)
         })
 
