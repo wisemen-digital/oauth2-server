@@ -22,7 +22,7 @@ export interface Token {
   accessTokenExpiresAt?: Date
   refreshToken?: string
   refreshTokenExpiresAt?: Date
-  scope: string[]
+  scopes?: string | string[] | undefined
   client: Client
   user: User
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
