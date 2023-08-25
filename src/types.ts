@@ -12,7 +12,7 @@ export interface Client {
   grants: string | string[]
   accessTokenLifetime?: number
   refreshTokenLifetime?: number
-  scopes: string[]
+  scopes?: string | string[] | undefined
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
