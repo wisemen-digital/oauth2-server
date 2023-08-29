@@ -29,6 +29,8 @@ export interface Token {
   [key: string]: any
 }
 
+export type AdAuthenticationResult = AuthenticationResult
+
 export interface ClientService {
   getClient: (clientId: string, secret: string) => Promise<Client | false>
   getUserFromClient: (client: Client) => Promise<User | undefined>
@@ -41,7 +43,7 @@ export interface UserService {
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>
   createOrGetGoogleUser?: (payload: IGoogleResponse) => Promise<User>
   createOrGetAppleUser?: (payload: IAppleResponse) => Promise<User>
-  findADUser?: (payload: AuthenticationResult) => Promise<User | false>
+  findADUser?: (payload: AdAuthenticationResult) => Promise<User | false>
 }
 
 export interface TokenService {
