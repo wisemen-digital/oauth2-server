@@ -89,7 +89,7 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     refreshTokenLifetime: options.services.tokenService.getRefreshTokenLifetime()
   }
 
-  serverOptions.extendedGrantTypes = {}
+  serverOptions.extendedGrantTypes = options.extendedGrantTypes ?? {}
 
   if (options?.integrations?.ad != null) {
     if (options.services.pkceService == null) {
@@ -156,11 +156,6 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     )
 
     serverOptions.extendedGrantTypes.google = GoogleGrantType
-  }
-
-  serverOptions.extendedGrantTypes = {
-    ...options.extendedGrantTypes,
-    ...serverOptions.extendedGrantTypes
   }
 
   if (options.integrations?.apple != null) {
