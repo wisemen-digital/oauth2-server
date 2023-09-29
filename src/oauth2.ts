@@ -46,26 +46,18 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
 
         return token
       },
-      verifyScope: async (token: Token, scope: string | string[]): Promise<boolean> => {
-        if (token.scope === null || token.scope === undefined) {
+      verifyScope: async (token: Token, scope: string[]): Promise<boolean> => {
+        if (token.scope == null) {
           return false
-        }
-
-        if (typeof scope === 'string') {
-          scope = scope.split(' ')
         }
 
         return scope.every(s => token.scope.includes(s))
       },
       validateScope: async (
-        _user: User, client: Client, scope: string | string[]
+        _user: User, client: Client, scope: string[]
       ): Promise<string[]> => {
-        if (scope === null || scope === undefined) {
+        if (scope == null) {
           return []
-        }
-
-        if (typeof scope === 'string') {
-          scope = scope.split(' ')
         }
 
         const valid = scope.every(s => {

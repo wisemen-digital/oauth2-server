@@ -1,10 +1,15 @@
 import OAuth2Server, { AbstractGrantType } from '@node-oauth/oauth2-server'
 
 export abstract class DefaultGrantType extends AbstractGrantType {
-  protected async saveToken (user: OAuth2Server.User, client: OAuth2Server.Client, scope: string): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
+  protected async saveToken (user: OAuth2Server.User, client: OAuth2Server.Client, scope: string[]): Promise<OAuth2Server.Token | OAuth2Server.Falsey> {
     const validatedScope = await this.validateScope(user, client, scope)
 
-    if (validatedScope == null || validatedScope === false || validatedScope === 0) {
+    if (
+      validatedScope == null ||
+      validatedScope === false ||
+      validatedScope === 0 ||
+      validatedScope === ''
+    ) {
       return false
     }
 

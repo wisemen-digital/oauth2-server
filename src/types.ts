@@ -12,7 +12,7 @@ export interface Client {
   grants: string | string[]
   accessTokenLifetime?: number
   refreshTokenLifetime?: number
-  scopes?: string | string[] | undefined
+  scopes?: string[] | undefined
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
@@ -22,7 +22,7 @@ export interface Token {
   accessTokenExpiresAt?: Date
   refreshToken?: string
   refreshTokenExpiresAt?: Date
-  scopes?: string | string[] | undefined
+  scopes?: string[] | undefined
   client: Client
   user: User
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,8 +51,8 @@ export interface TokenService {
   getRefreshTokenLifetime: () => number
   getAccessToken: (accessToken: string) => Promise<Token | false>
   getRefreshToken: (refreshToken: string) => Promise<RefreshToken | false>
-  generateAccessToken: (client: Client, user: User, scope: string | string[]) => Promise<string>
-  generateRefreshToken: (client: Client, user: User, scope: string | string []) => Promise<string>
+  generateAccessToken: (client: Client, user: User, scope: string[]) => Promise<string>
+  generateRefreshToken: (client: Client, user: User, scope: string []) => Promise<string>
   saveRefreshToken: (refreshToken: string) => Promise<void>
   revokeToken: (token: RefreshToken | Token) => Promise<boolean>
 }

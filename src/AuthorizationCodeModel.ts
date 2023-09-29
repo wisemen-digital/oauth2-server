@@ -16,11 +16,7 @@ export function generateAuthorizationCodeModel (service: CodeService | undefined
 
   if (service.generateAuthorizationCode !== undefined) {
     return {
-      generateAuthorizationCode: async (client: Client, user: User, scope: string | string[]): Promise<string> => {
-        if (typeof scope === 'string') {
-          scope = scope.split(' ')
-        }
-
+      generateAuthorizationCode: async (client: Client, user: User, scope: string[]): Promise<string> => {
         // @ts-expect-error can never be undefined because of check above
         return await service.generateAuthorizationCode(client, user, scope)
       },
@@ -35,9 +31,6 @@ export function generateAuthorizationCodeModel (service: CodeService | undefined
         client: Client,
         user: User
       ): Promise<AuthorizationCode | Falsey> => {
-        if (typeof code.scope === 'string') {
-          code.scope = code.scope.split(' ')
-        }
         const authorizationCode: AuthorizationCode = {
           authorizationCode: code.authorizationCode,
           expiresAt: code.expiresAt,
@@ -63,9 +56,6 @@ export function generateAuthorizationCodeModel (service: CodeService | undefined
         client: Client,
         user: User
       ): Promise<AuthorizationCode | Falsey> => {
-        if (typeof code.scope === 'string') {
-          code.scope = code.scope.split(' ')
-        }
         const authorizationCode: AuthorizationCode = {
           authorizationCode: code.authorizationCode,
           expiresAt: code.expiresAt,
