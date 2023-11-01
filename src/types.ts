@@ -37,7 +37,7 @@ export interface ClientService {
 }
 
 export interface UserService {
-  verify: (email: string, password: string) => Promise<User | false>
+  verify: (email: string, password: string, client: Client) => Promise<User | false>
   createAnonymousUser?: () => Promise<User>
   createWoningpasUser?: (clientUuid: string) => Promise<User>
   createOrGetBurgerProfielUser?: (payload: IBurgerProfielResponse) => Promise<User>

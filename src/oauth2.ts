@@ -18,8 +18,8 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
       getUserFromClient: async (client: Client) => {
         return await options.services.clientService.getUserFromClient(client)
       },
-      getUser: async (username, password) => {
-        return await options.services.userService.verify(username, password)
+      getUser: async (username, password, client) => {
+        return await options.services.userService.verify(username, password, client)
       },
       generateAccessToken: async (client: Client, user, scope) => {
         return await options.services.tokenService.generateAccessToken(client, user, scope)
