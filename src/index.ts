@@ -1,9 +1,11 @@
 import OAuth2Server from '@node-oauth/oauth2-server'
 
+export { DefaultGrantType } from './grants/DefaultGrantType'
+
 export * from './oauth2'
 export * from './types'
 
-export { Request, Response } from '@node-oauth/oauth2-server'
+export { Request, Response, AbstractGrantType, InvalidArgumentError } from '@node-oauth/oauth2-server'
 
 export { OAuth2Server }
 
