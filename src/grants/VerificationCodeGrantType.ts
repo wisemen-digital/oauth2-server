@@ -20,8 +20,8 @@ export abstract class VerificationCodeGrantType extends DefaultGrantType {
 
     const scope = this.getScope(request)
 
-    const { phoneNumber, code } = request.body
-    const user = await VerificationCodeGrantType.codeService.verify(phoneNumber, code)
+    const { key, code } = request.body
+    const user = await VerificationCodeGrantType.codeService.verify(key, code)
 
     if (user === false) {
       throw Error('Invalid code')
