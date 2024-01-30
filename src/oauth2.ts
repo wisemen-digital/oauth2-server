@@ -7,6 +7,7 @@ import { BurgerProfielGrantType } from './grants/BurgerProfielGrantType'
 import { WoningpasGrantType } from './grants/WoningpasGrantType'
 import { GoogleGrantType } from './grants/GoogleGrantType'
 import { AppleGrantType } from './grants/AppleGrantType'
+import { VerificationCodeGrantType } from './grants/VerificationCodeGrantType'
 
 export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
   const codeModel = generateAuthorizationCodeModel(options.services.codeService)
@@ -160,6 +161,22 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     )
 
     serverOptions.extendedGrantTypes.apple = AppleGrantType
+  }
+
+  if (options.integrations?.verificationCode != null) {
+    if (options.services.verificationCodeService == null) {
+      throw new Error('Verification Code service must be implemented')
+    }
+
+    if (options.services.verificationCodeService?.verify == null) {
+      throw new Error('Verification Code service must implement verify for verificationCode integration')
+    }
+
+    VerificationCodeGrantType.configure(
+      options.services.verificationCodeService
+    )
+
+    serverOptions.extendedGrantTypes.verificationCode = VerificationCodeGrantType
   }
 
   return new OAuth2Server(serverOptions)
