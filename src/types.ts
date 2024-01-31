@@ -65,7 +65,7 @@ export interface CodeService {
 }
 
 export interface VerificationCodeService {
-  verify: (key: string, code: number) => Promise<User | false>
+  verify: (key: string, code: string) => Promise<User | false>
 }
 
 export interface PKCEService {
