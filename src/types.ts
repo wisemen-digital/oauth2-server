@@ -64,6 +64,10 @@ export interface CodeService {
   revokeAuthorizationCode: (code: AuthorizationCode) => Promise<boolean>
 }
 
+export interface VerificationCodeService {
+  verify: (key: string, code: string) => Promise<User | false>
+}
+
 export interface PKCEService {
   find: (state: string) => Promise<PKCEType>
   create: (pkce: PKCEType) => Promise<PKCEType>
@@ -77,6 +81,7 @@ export interface OAuth2ServerOptions {
     tokenService: TokenService
     pkceService?: PKCEService
     codeService?: CodeService
+    verificationCodeService?: VerificationCodeService
   }
   integrations?: {
     ad?: AzureADConfig
@@ -85,6 +90,7 @@ export interface OAuth2ServerOptions {
     burgerProfiel?: IBurgerProfielConfig
     google?: boolean
     apple?: boolean
+    verificationCode?: boolean
   }
   extendedGrantTypes?: Record<string, typeof AbstractGrantType>
 }
