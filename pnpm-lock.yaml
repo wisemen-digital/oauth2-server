@@ -16,7 +16,7 @@ dependencies:
     version: 1.6.7
   jose:
     specifier: ^4.11.4
-    version: 4.11.4
+    version: 4.15.5
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
@@ -4748,8 +4748,8 @@ packages:
       - ts-node
     dev: true
 
-  /jose@4.11.4:
-    resolution: {integrity: sha512-94FdcR8felat4vaTJyL/WVdtlWLlsnLMZP8v+A0Vru18K3bQ22vn7TtpVh3JlgBFNIlYOUlGqwp/MjRPOnIyCQ==}
+  /jose@4.15.5:
+    resolution: {integrity: sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==}
     dev: false
 
   /js-sdsl@4.3.0:
