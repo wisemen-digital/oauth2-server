@@ -1,9 +1,8 @@
 import OAuth2Server, { InvalidArgumentError } from '@node-oauth/oauth2-server'
 import axios from 'axios'
 import { base64url } from 'jose'
-import jwt from 'jsonwebtoken'
-import jwkToPem from 'jwk-to-pem'
 import { IAppleResponse, UserService } from '../types'
+import { verifyJwtToken } from '../utils/verify-jwt-token.util'
 import { DefaultGrantType } from './DefaultGrantType'
 
 export abstract class AppleGrantType extends DefaultGrantType {
@@ -43,20 +42,7 @@ export abstract class AppleGrantType extends DefaultGrantType {
 
     if (matchingKey == null) throw new Error('No matching kid found.')
 
-    const pem = jwkToPem(matchingKey)
-
-    try {
-      jwt.verify(token, pem, { algorithms: ['RS256'] })
-    } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
-        throw new Error('Invalid token')
-      } else if (error instanceof jwt.TokenExpiredError) {
-        throw new Error('Token expired')
-      } else {
-        throw new Error('Unknown error while verifying token')
-      }
-    }
-
+    verifyJwtToken(token, matchingKey)
     return JSON.parse(base64url.decode(token.split('.')[1]) as unknown as string)
   }
 }

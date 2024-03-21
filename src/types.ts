@@ -88,7 +88,7 @@ export interface OAuth2ServerOptions {
     anonymous?: boolean
     woningpas?: boolean
     burgerProfiel?: IBurgerProfielConfig
-    google?: boolean
+    google?: IGoogleConfig
     apple?: boolean
     verificationCode?: boolean
   }
@@ -131,6 +131,12 @@ export interface IBurgerProfielResponse {
   vo_email?: string
   vo_orgcode?: string
   vo_orgnaam?: string
+}
+
+export interface IGoogleConfig {
+  clientId: string
+  clientSecret: string
+  redirectUri: string
 }
 
 export interface IGoogleResponse {
