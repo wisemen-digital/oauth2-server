@@ -145,7 +145,8 @@ export function createOAuth2 (options: OAuth2ServerOptions): OAuth2Server {
     }
 
     GoogleGrantType.configure(
-      options.services.userService
+      options.services.userService,
+      options.integrations.google
     )
 
     serverOptions.extendedGrantTypes.google = GoogleGrantType
